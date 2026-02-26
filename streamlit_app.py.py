@@ -157,11 +157,21 @@ if selected == "Beranda":
 
 # ===== CATAT =====
 elif selected == "Catat":
-    st.title(" Catat Transaksi Baru")
+    st.title("Catat Transaksi Baru")
     with st.form("form_input"):
         tanggal = st.date_input("Tanggal")
         jenis = st.selectbox("Jenis", ["Pemasukan", "Pengeluaran"])
-        kategori = st.selectbox("Kategori", ["Makanan", "Transport", "Internet", "Listrik", "Lainnya"])
+
+        # ===== KATEGORI FLEKSIBEL =====
+        kategori_list = ["Makanan", "Transport", "Internet", "Listrik"]
+        kategori_pilih = st.selectbox("Kategori", kategori_list + ["Tambah Kategori Baru"])
+
+        if kategori_pilih == "Tambah Kategori Baru":
+            kategori_baru = st.text_input("Masukkan Kategori Baru")
+            kategori = kategori_baru
+        else:
+            kategori = kategori_pilih
+
         nominal = st.number_input("Nominal", min_value=0)
         keterangan = st.text_input("Keterangan (Opsional)")
         simpan = st.form_submit_button("Simpan")
@@ -178,7 +188,7 @@ elif selected == "Catat":
                     nominal,
                     keterangan
                 )
-                st.success("✅ Transaksi berhasil disimpan!")
+                st.success("Transaksi berhasil disimpan.")
 
 # ===== RIWAYAT =====
 elif selected == "Riwayat":
