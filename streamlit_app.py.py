@@ -287,7 +287,7 @@ elif selected == "Laporan":
 
 # ===== FITUR TAMBAHAN =====
 elif selected == "Fitur Tambahan":
-    st.title(" Fitur Tambahan Keuangan Mahasiswa")
+    st.title("Fitur Tambahan Keuangan Mahasiswa")
     df = load_data()
     df = df[df["nim"] == st.session_state["nim"]]
     df["tanggal"] = pd.to_datetime(df["tanggal"], errors="coerce")
@@ -296,14 +296,36 @@ elif selected == "Fitur Tambahan":
     pengeluaran = df[df["jenis"] == "Pengeluaran"]["nominal"].sum()
     saldo = pemasukan - pengeluaran
 
-    st.subheader(" Target Tabungan")
+    st.subheader("Target Tabungan")
     target_nama = st.text_input("Nama Target Tabungan", value=st.session_state.get("target_nama", ""))
     target_nominal = st.number_input("Nominal Target", min_value=0, value=st.session_state.get("target_nominal", 0))
+    
     if st.button("Simpan Target"):
         st.session_state.target_nama = target_nama
         st.session_state.target_nominal = target_nominal
-        st.success("✅ Target disimpan!")
+        st.success("Target disimpan.")
 
+    # ===== NOTIFIKASI SALDO =====
+    st.subheader("Notifikasi Saldo")
+
+    if saldo < 50000:
+        st.error("Saldo sangat rendah.")
+    elif saldo < 200000:
+        st.warning("Saldo mulai menipis.")
+    else:
+        st.success("Saldo dalam kondisi aman.")
+
+    st.subheader("Rata-rata Pengeluaran Harian")
+
+    pengeluaran_df = df[df["jenis"] == "Pengeluaran"].copy()
+
+    if not pengeluaran_df.empty:
+        selisih = pengeluaran_df["tanggal"].max() - pengeluaran_df["tanggal"].min()
+        hari = selisih.days + 1 if pd.notnull(selisih) else 1
+        rata = pengeluaran_df["nominal"].sum() / hari if hari > 0 else 0
+        st.write(f"Rata-rata: Rp {rata:,.0f} per hari")
+    else:
+        st.info("Belum ada data pengeluaran.")
 # ===== TARGET TABUNGAN =====
 if st.session_state.get("target_nama"):
     progress = 0
@@ -327,23 +349,7 @@ if st.session_state.get("target_nama"):
         st.info(f"🪙 Sisa: Rp {sisa:,.0f}")
 
 
-# ===== NOTIFIKASI SALDO =====
-st.subheader(" Notifikasi Saldo")
 
-if saldo < 50000:
-    st.error("⚠️ Saldo sangat rendah!")
-elif saldo < 200000:
-    st.warning("🔄 Saldo mulai menipis.")
-else:
-    st.success("✅ Saldo aman.")
-    st.subheader(" Rata-rata Pengeluaran Harian")
-    pengeluaran_df = df_global[df_global["jenis"] == "Pengeluaran"]
-    if not pengeluaran_df.empty:
-        hari = (pengeluaran_df["tanggal"].max() - pengeluaran_df["tanggal"].min()).days + 1
-        rata = pengeluaran_df["nominal"].sum() / hari if hari > 0 else 0
-        st.write(f" Rata-rata: Rp {rata:,.0f} per hari")
-    else:
-        st.info("Belum ada data pengeluaran.")
 
     if st.button("📥 Export Semua Data ke PDF"):
         if df.empty:
