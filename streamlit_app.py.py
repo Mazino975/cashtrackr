@@ -163,20 +163,7 @@ elif selected == "Catat":
         tanggal = st.date_input("Tanggal")
         jenis = st.selectbox("Jenis", ["Pemasukan", "Pengeluaran"])
 
-        # ===== KATEGORI DINAMIS =====
-        if "kategori_list" not in st.session_state:
-            st.session_state.kategori_list = ["Makanan", "Transport", "Internet", "Listrik"]
-
-        kategori_pilih = st.selectbox(
-            "Kategori",
-            st.session_state.kategori_list + ["Tambah Kategori Baru"]
-        )
-
-        if kategori_pilih == "Tambah Kategori Baru":
-            kategori_baru = st.text_input("Masukkan Kategori Baru")
-            kategori = kategori_baru
-        else:
-            kategori = kategori_pilih
+        kategori = st.text_input("Kategori").title()
 
         nominal = st.number_input("Nominal", min_value=0)
         keterangan = st.text_input("Keterangan (Opsional)")
@@ -187,9 +174,6 @@ elif selected == "Catat":
             if not tanggal or not jenis or not kategori or nominal <= 0:
                 st.warning("Semua field harus diisi dengan benar.")
             else:
-                if kategori not in st.session_state.kategori_list:
-                    st.session_state.kategori_list.append(kategori)
-
                 simpan_data(
                     st.session_state["nim"],
                     tanggal,
@@ -200,7 +184,6 @@ elif selected == "Catat":
                 )
 
                 st.success("Transaksi berhasil disimpan.")
-
 # ===== RIWAYAT =====
 elif selected == "Riwayat":
     st.title(" Riwayat Transaksi")
