@@ -336,7 +336,7 @@ elif saldo < 200000:
 else:
     st.success("✅ Saldo aman.")
     st.subheader(" Rata-rata Pengeluaran Harian")
-    pengeluaran_df = df[df["jenis"] == "Pengeluaran"]
+    pengeluaran_df = df_global[df_global["jenis"] == "Pengeluaran"]
     if not pengeluaran_df.empty:
         hari = (pengeluaran_df["tanggal"].max() - pengeluaran_df["tanggal"].min()).days + 1
         rata = pengeluaran_df["nominal"].sum() / hari if hari > 0 else 0
