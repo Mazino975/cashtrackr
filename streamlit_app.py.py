@@ -158,47 +158,48 @@ if selected == "Beranda":
 # ===== CATAT =====
 elif selected == "Catat":
     st.title("Catat Transaksi Baru")
+
     with st.form("form_input"):
         tanggal = st.date_input("Tanggal")
         jenis = st.selectbox("Jenis", ["Pemasukan", "Pengeluaran"])
 
-       # ===== KATEGORI DINAMIS =====
-if "kategori_list" not in st.session_state:
-    st.session_state.kategori_list = ["Makanan", "Transport", "Internet", "Listrik"]
+        # ===== KATEGORI DINAMIS =====
+        if "kategori_list" not in st.session_state:
+            st.session_state.kategori_list = ["Makanan", "Transport", "Internet", "Listrik"]
 
-kategori_pilih = st.selectbox(
-    "Kategori",
-    st.session_state.kategori_list + ["Tambah Kategori Baru"]
-)
-
-if kategori_pilih == "Tambah Kategori Baru":
-    kategori_baru = st.text_input("Masukkan Kategori Baru")
-    kategori = kategori_baru
-else:
-    kategori = kategori_pilih
-
-nominal = st.number_input("Nominal", min_value=0)
-keterangan = st.text_input("Keterangan (Opsional)")
-simpan = st.form_submit_button("Simpan")
-
-if simpan:
-    if not tanggal or not jenis or not kategori or nominal <= 0:
-        st.warning("Semua field harus diisi dengan benar.")
-    else:
-        # Tambahkan ke list jika kategori baru
-        if kategori not in st.session_state.kategori_list:
-            st.session_state.kategori_list.append(kategori)
-
-        simpan_data(
-            st.session_state["nim"],
-            tanggal,
-            jenis,
-            kategori,
-            nominal,
-            keterangan
+        kategori_pilih = st.selectbox(
+            "Kategori",
+            st.session_state.kategori_list + ["Tambah Kategori Baru"]
         )
 
-        st.success("Transaksi berhasil disimpan.")
+        if kategori_pilih == "Tambah Kategori Baru":
+            kategori_baru = st.text_input("Masukkan Kategori Baru")
+            kategori = kategori_baru
+        else:
+            kategori = kategori_pilih
+
+        nominal = st.number_input("Nominal", min_value=0)
+        keterangan = st.text_input("Keterangan (Opsional)")
+
+        simpan = st.form_submit_button("Simpan")
+
+        if simpan:
+            if not tanggal or not jenis or not kategori or nominal <= 0:
+                st.warning("Semua field harus diisi dengan benar.")
+            else:
+                if kategori not in st.session_state.kategori_list:
+                    st.session_state.kategori_list.append(kategori)
+
+                simpan_data(
+                    st.session_state["nim"],
+                    tanggal,
+                    jenis,
+                    kategori,
+                    nominal,
+                    keterangan
+                )
+
+                st.success("Transaksi berhasil disimpan.")
 
 # ===== RIWAYAT =====
 elif selected == "Riwayat":
