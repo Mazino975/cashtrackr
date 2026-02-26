@@ -71,6 +71,7 @@ if not st.session_state.login:
 # ===== HITUNG SALDO GLOBAL =====
 df_global = load_data()
 df_global = df_global[df_global["nim"] == st.session_state["nim"]]
+df_global["tanggal"] = pd.to_datetime(df_global["tanggal"], errors="coerce")
 
 pemasukan_global = df_global[df_global["jenis"] == "Pemasukan"]["nominal"].sum()
 pengeluaran_global = df_global[df_global["jenis"] == "Pengeluaran"]["nominal"].sum()
