@@ -309,6 +309,26 @@ elif selected == "Fitur Tambahan":
         st.session_state.target_nominal = target_nominal
         st.success("Target disimpan.")
 
+    # ===== TARGET TABUNGAN (HARUS MASUK KE DALAM SINI) =====
+    if st.session_state.get("target_nama"):
+        progress = 0
+
+        if st.session_state["target_nominal"] > 0:
+            progress = max(
+                0,
+                min(saldo / st.session_state["target_nominal"], 1.0)
+            )
+
+        st.write(
+            f"Target: **{st.session_state['target_nama']}** - Rp {st.session_state['target_nominal']:,.0f}"
+        )
+        st.progress(progress)
+
+        if saldo >= st.session_state["target_nominal"] and st.session_state["target_nominal"] > 0:
+            st.success("Target Tercapai!")
+        else:
+            sisa = max(0, st.session_state["target_nominal"] - saldo)
+            st.info(f"Sisa: Rp {sisa:,.0f}")
     # ===== NOTIFIKASI SALDO =====
     st.subheader("Notifikasi Saldo")
 
@@ -330,30 +350,6 @@ elif selected == "Fitur Tambahan":
         st.write(f"Rata-rata: Rp {rata:,.0f} per hari")
     else:
         st.info("Belum ada data pengeluaran.")
-# ===== TARGET TABUNGAN =====
-if st.session_state.get("target_nama"):
-    progress = 0
-
-    if st.session_state["target_nominal"] > 0:
-        progress = max(
-            0,
-            min(saldo / st.session_state["target_nominal"], 1.0)
-        )
-
-    st.write(
-        f"Target: **{st.session_state['target_nama']}** - Rp {st.session_state['target_nominal']:,.0f}"
-    )
-    st.progress(progress)
-
-    if saldo >= st.session_state["target_nominal"] and st.session_state["target_nominal"] > 0:
-        st.success("🎉 Target Tercapai!")
-        st.balloons()
-    else:
-        sisa = max(0, st.session_state["target_nominal"] - saldo)
-        st.info(f"🪙 Sisa: Rp {sisa:,.0f}")
-
-
-
 
     if st.button("📥 Export Semua Data ke PDF"):
         if df.empty:
@@ -365,7 +361,7 @@ if st.session_state.get("target_nama"):
                 st.download_button("📄 Klik untuk Unduh PDF", data=f, file_name=filename, mime="application/pdf")
 
 # ===== TENTANG =====
-if selected == "Tentang":
+elif selected == "Tentang":
     st.title("ℹ️ Tentang Aplikasi")
     st.markdown("""
     **CashTrackr** adalah aplikasi manajemen keuangan harian berbasis web yang dirancang khusus untuk mahasiswa.  
